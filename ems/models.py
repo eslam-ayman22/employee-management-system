@@ -150,7 +150,7 @@ class EmployeeDocument(models.Model):
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='documents')
     doc_type = models.CharField(max_length=50, choices=DOC_TYPE_CHOICES)
-    file_path = models.CharField(max_length=255)  # لو هتستخدم FileField ممكن تغيّره لاحقًا
+    file_path = models.CharField(max_length=255)
     uploaded_by = models.ForeignKey(UserAccount, on_delete=models.SET_NULL, null=True, blank=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
