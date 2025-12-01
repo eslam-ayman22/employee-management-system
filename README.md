@@ -1,6 +1,6 @@
 EMS – Employee Management System (Backend)
 
-شارك المشروع: Django REST Framework + JWT Authentication
+ Django REST Framework + JWT Authentication
 
 Overview
 
