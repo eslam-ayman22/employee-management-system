@@ -1,10 +1,12 @@
 from django.shortcuts import render
-
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from .permissions import HasPermission
 
 from rest_framework import viewsets
 from .models import (
     Company, Department, Employee, UserAccount, Role, Permission,
     RolePermission, EmployeeAddress, EmployeeDocument, OnboardingTask, AuditLog, UserRole
+    
 )
 from .serializers import (
     CompanySerializer, DepartmentSerializer, EmployeeSerializer, UserAccountSerializer,
@@ -16,6 +18,7 @@ from .serializers import (
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
+    permission_classes = [AllowAny]
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -26,6 +29,8 @@ class DepartmentViewSet(viewsets.ModelViewSet):
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+    permission_classes = [HasPermission]
+    required_permission = 'employee.view'
 
 
 class UserAccountViewSet(viewsets.ModelViewSet):

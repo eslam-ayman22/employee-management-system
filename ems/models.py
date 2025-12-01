@@ -56,10 +56,12 @@ class RolePermission(models.Model):
 
 
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 
 class UserAccount(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name='useraccount')
     employee = models.ForeignKey('Employee', on_delete=models.SET_NULL, null=True, blank=True, related_name='user_accounts')
-    username = models.CharField(max_length=150, unique=True)
+    username = models.CharField(max_length=150, unique=True)   
     email = models.EmailField(unique=True)
     password_hash = models.CharField(max_length=255)
     is_active = models.BooleanField(default=True)
@@ -71,12 +73,17 @@ class UserAccount(models.Model):
         self.save()
 
     def __str__(self):
-        return self.username
+        return self.username or (self.user.username if self.user else 'user')
 
+    roles = models.ManyToManyField(Role, through='UserRole')
 
-
-
-
+    def get_all_permissions(self):
+        perms = set()
+        for role in self.roles.all():
+            
+            for rp in role.role_permissions.all():  
+                perms.add(rp.permission.codename)
+        return perms
 
 class UserRole(models.Model):
     user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
