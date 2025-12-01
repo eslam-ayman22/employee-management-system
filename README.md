@@ -1,13 +1,8 @@
 EMS – Employee Management System (Backend)
 
- Django REST Framework + JWT Authentication
+Tech Stack: Django REST Framework + JWT Authentication
 
-Overview
-
-Employee Management System (EMS) هو نظام لإدارة الموظفين داخل الشركات.
-يوفر النظام إمكانية تسجيل الدخول، عرض الموظفين، إنشاء حسابات جديدة، تحديد الصلاحيات (Roles & Permissions)، ومتابعة العمليات الإدارية.
-
-هذا المستودع يحتوي على الكود الخاص بالـ Backend باستخدام Django REST Framework وبنية نظيفة قابلة للتطوير.
+نظام لإدارة الموظفين داخل الشركات (Employee Management System). يوفر النظام تسجيل الدخول، إدارة الموظفين، إدارة الحسابات والصلاحيات، ومتابعة العمليات الإدارية.
 
 ✨ Features
 
@@ -27,7 +22,7 @@ Employee Management System (EMS) هو نظام لإدارة الموظفين د�
 
 📦 Production-ready settings structure
 
-🏗️ Project Architecture
+🏗️ Project Structure
 ems-backend/
 │── core/
 │   ├── settings.py
@@ -46,133 +41,135 @@ ems-backend/
 │── manage.py
 
 🗄️ ERD (Entity Relationship Diagram)
-[Company] 
-  id (PK)
-  name
-  address
-  created_at
-     │
-     │ 1:N
-     ▼
-[Department] 
-  id (PK)
-  company_id (FK → Company.id)
-  name
-  manager_id (FK → Employee.id, nullable)
-  created_at
-     │
-     │ 1:N
-     ▼
-[Employee] 
-  id (PK)
-  employee_code
-  first_name
-  last_name
-  email
-  phone
-  date_of_birth
-  hire_date
-  job_title
-  department_id (FK → Department.id)
-  manager_id (FK → Employee.id, nullable) ──┐
-  status                                     │ self-relation
-  current_salary                              │
-  created_at                                  │
-  updated_at                                  │
-     │                                        │
-     │ 1:N                                    │
-     ▼                                        │
-[EmployeeAddress]                             │
-  id (PK)                                     │
-  employee_id (FK → Employee.id)              │
-  address_line                                │
-  city                                        │
-  country                                     │
-  is_primary                                  │
-                                              │
-[EmployeeDocument] <─┐                        │
-  id (PK)            │                        │
-  employee_id (FK)───┘                        │
-  doc_type                                    │
-  file_path/url                               │
-  uploaded_by (FK → UserAccount.id)           │
-  uploaded_at                                 │
-  status                                      │
-                                              │
-[OnboardingTask]                              
-  id (PK)                                    
-  employee_id (FK → Employee.id)              
-  title                                      
-  description                                
-  assigned_to (FK → UserAccount.id, nullable)
-  due_date                                    
-  status                                      
-  completed_at                                
+Company & Department
+[Company] 1:N [Department]
+id (PK)
+name
+address
+created_at
 
-[UserAccount] 
-  id (PK)
-  employee_id (FK → Employee.id, nullable)
-  username
-  email
-  password_hash
-  is_active
-  created_at
-     │
-     │ M:N (via RolePermission)
-     ▼
-[Role] 
-  id (PK)
-  name
-  description
-     │
-     │ M:N (via RolePermission)
-     ▼
-[Permission] 
-  id (PK)
-  codename
-  description
+[Department]
+id (PK)
+company_id (FK → Company.id)
+name
+manager_id (FK → Employee.id, nullable)
+created_at
 
-[RolePermission] 
-  id (PK)
-  role_id (FK → Role.id)
-  permission_id (FK → Permission.id)
+Employee
+[Employee]
+id (PK)
+employee_code
+first_name
+last_name
+email
+phone
+date_of_birth
+hire_date
+job_title
+department_id (FK → Department.id)
+manager_id (FK → Employee.id, nullable)  # self-relation
+status
+current_salary
+created_at
+updated_at
 
-[AuditLog] 
-  id (PK)
-  actor_id (FK → UserAccount.id)
-  action
-  target_type
-  target_id
-  timestamp
-  details (json)
+Employee Related Models
+[EmployeeAddress]
+id (PK)
+employee_id (FK → Employee.id)
+address_line
+city
+country
+is_primary
+
+[EmployeeDocument]
+id (PK)
+employee_id (FK → Employee.id)
+doc_type
+file_path/url
+uploaded_by (FK → UserAccount.id)
+uploaded_at
+status
+
+[OnboardingTask]
+id (PK)
+employee_id (FK → Employee.id)
+title
+description
+assigned_to (FK → UserAccount.id, nullable)
+due_date
+status
+completed_at
+
+Users, Roles & Permissions
+[UserAccount]
+id (PK)
+employee_id (FK → Employee.id, nullable)
+username
+email
+password_hash
+is_active
+created_at
+   │
+   │ M:N (via RolePermission)
+   ▼
+[Role]
+id (PK)
+name
+description
+   │
+   │ M:N (via RolePermission)
+   ▼
+[Permission]
+id (PK)
+codename
+description
+
+[RolePermission]
+id (PK)
+role_id (FK → Role.id)
+permission_id (FK → Permission.id)
+
+Audit Logs
+[AuditLog]
+id (PK)
+actor_id (FK → UserAccount.id)
+action
+target_type
+target_id
+timestamp
+details (json)
 
 ⚙️ Installation & Setup
-1️⃣ Clone Project
+# Clone project
 git clone https://github.com/USERNAME/ems-backend.git
 cd ems-backend
 
-2️⃣ Create Virtual Environment
+# Create Virtual Environment
 python -m venv venv
-venv\Scripts\activate
+venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Mac/Linux
 
-3️⃣ Install Dependencies
+# Install Dependencies
 pip install -r requirements.txt
 
-4️⃣ Apply Migrations
+# Apply Migrations
 python manage.py migrate
 
-5️⃣ Create Superuser
+# Create Superuser
 python manage.py createsuperuser
 
-6️⃣ Run Server
+# Run Server
 python manage.py runserver
 
 🔐 Authentication (JWT)
-Login
+
+Login Endpoint:
 
 POST /api/auth/login/
 
-Request:
+
+Request Body:
 
 {
   "username": "eslam",
@@ -188,11 +185,13 @@ Response:
 }
 
 📡 API Endpoints
-Method	Endpoint	Description
-POST	/api/auth/login/	Login (JWT)
-GET	/api/employees/	List All Employees (protected)
-POST	/api/employees/	Create Employee
-GET	/api/employees/:id/	Retrieve Employee
-PUT	/api/employees/:id/	Update Employee
-DELETE	/api/employees/:id/	Delete Employee
-GET	/api/users/permissions/	Get Logged User Permissions
+Method	Endpoint	Description	Protected
+POST	/api/auth/login/	Login (JWT)	No
+GET	/api/employees/	List All Employees	Yes
+POST	/api/employees/	Create Employee	Yes
+GET	/api/employees/:id/	Retrieve Employee	Yes
+PUT	/api/employees/:id/	Update Employee	Yes
+DELETE	/api/employees/:id/	Delete Employee	Yes
+GET	/api/users/permissions/	Get Logged User Permissions	Yes
+
+ملاحظة: جميع Endpoints الخاصة بالـ CRUD تتطلب JWT Token صالح في الهيدر Authorization: Bearer <token>.
