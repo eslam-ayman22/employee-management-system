@@ -41,7 +41,7 @@ ems-backend/
 │── manage.py
 
 🗄️ ERD (Entity Relationship Diagram)
-![ERD](img/ERD)
+![ERD](img/ERD.png)
 
 
 # Install Dependencies
